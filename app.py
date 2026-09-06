@@ -95,22 +95,27 @@ class Aplication:
             widget.destroy()
         for fila, producto in enumerate(self.productos):
             estado = "Disponible"
+            colorboton= "green"
+            colorhover= "darkgreen"
             if producto.stock == 0:
                 estado ="Agotado"
+                colorboton= "red"
+                colorhover= "darkred"
             elif producto.stock <= 2:
                 estado = "Reponer"
+                colorboton= "orange"
+                colorhover= "darkorange"
 
             texto = (f"{producto.nombre} · ${producto.precio}\n"
-                     f"Stock: {producto.stock} | {estado} | +1")
-            boton = ctk.CTkButton(self.catalogo, text=texto,
-                height=64, anchor="w",
+                     f"Stock: {producto.stock} | {estado} |")
+            boton5 = ctk.CTkButton(self.catalogo, text=texto,
+                height=64, anchor="w", fg_color= colorboton, hover_color= colorhover,
                 command=partial(self.agregar_uno, producto.codigo))
-            boton.grid(row=fila, column=0, padx=8, pady=5,
+            boton5.grid(row=fila, column=0, padx=8, pady=5,
                        sticky="ew")
             if producto.stock == 0:
-                boton.configure(state="disabled")
+                boton5.configure(state="disabled")
         lineas = ["· CARRITO ·", ""]
-
         for producto in self.carrito:
             lineas.append(f"{producto.nombre}: ${producto.precio}")
         self.escribir (self.detalle, "\n".join(lineas))
@@ -118,7 +123,7 @@ class Aplication:
         importe = sum(self.ventas)
         self.resumen.configure(text=f"Ventas de esta seccion: "
             f"{len(self.ventas)} | Importe vendido: ${importe}")
-        
+
     def agregar_uno(self, codigo):
         try:
             agregaraCarrito(self.productos, codigo, self.carrito)
@@ -148,8 +153,7 @@ class Aplication:
         try:
             total = confirmar(self.carrito, self.ventas)
         except ValueError as error:
-            messagebox.showerror("No se registro", str(error),
-                                 parent=self.app)
+            messagebox.showerror("No se registro", str(error), parent=self.app)
             return  
         self.refrescar()
         self.escribir(self.opciones,
@@ -173,7 +177,7 @@ class Aplication:
         lineas = []
         for primero, segundo, total, sobra in opciones:
             lineas.append(f"{primero} + {segundo}: ${total}"
-                          f"| Sobran ${sobra}")
+                          f"|    Sobran ${sobra}")
         resultado = "\n".join(lineas) or "No hay pares disponibles."
         self.escribir(self.opciones, resultado)
 
