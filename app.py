@@ -25,12 +25,14 @@ class Aplication:
         title.grid(row= 0, column= 0, padx= 12, pady= 16)
 
         self.tabs= ctk.CTkTabview(self.app)
-        self.tabs.grid(row= 1, column= 0, padx= 16, pady= 16, sticky="ew")
+        self.tabs.grid(row= 1, column= 0, padx= 16, pady= 16, sticky="snew")
         self.tabs.add("Libreria")
         self.tabs.add("Presupuesto")
+        self.tabs.add("Administracion")
 
         self.crearLibreria()
         self.crearPresupuesto()
+        self.reponerExistencias()
         self.resumen = ctk.CTkLabel(self.app, text="")
         self.resumen.grid(row= 2, column= 0, pady= 10)
         self.refrescar()
@@ -42,13 +44,19 @@ class Aplication:
         panel.grid_rowconfigure(0, weight= 1)
 
         self.catalogo = ctk.CTkScrollableFrame(panel, label_text="Productos")
-        self.catalogo.grid(row= 0, column= 0, padx= 8, pady=8, sticky="nsew")
+        self.catalogo.grid(row= 0, column= 0, padx= 8, pady=20, sticky="nsew")
         self.catalogo.grid_columnconfigure(0, weight= 1)
 
         compra = ctk.CTkFrame(panel)
         compra.grid(row= 0, column= 1, padx= 8, pady= 8, sticky="nsew")
         compra.grid_columnconfigure(0, weight= 1)
         compra.grid_rowconfigure(0, weight= 1)
+
+        entbuscar = ctk.CTkEntry(panel,placeholder_text="Buscador")
+        entbuscar.grid(row=1, column=0, padx=2, pady=2, sticky="ew")
+
+        botbusc = ctk.CTkButton(panel, text="?",command=self.buscar)
+
 
         self.detalle = ctk.CTkTextbox(compra, font=("Arial", 18))
         self.detalle.grid(row= 0, column= 0, padx= 12, pady= 12, sticky="nsew")
@@ -64,6 +72,9 @@ class Aplication:
         for fila, (texto, accion) in enumerate(acciones, start=2):
             boton= ctk.CTkButton(compra, text=texto, command= accion, height=36)
             boton.grid(row= fila, column= 0, padx= 12, pady= 5, sticky="ew")
+
+    def reponerExistencias(self):
+        panel= ctk.CTkTabview("Administracion")
 
     def crearPresupuesto(self):
         panel = self.tabs.tab("Presupuesto")
@@ -161,6 +172,13 @@ class Aplication:
         messagebox.showinfo("Venta simulada registrada",
             f"Total: ${total}\nComponente sin validez fiscal.",
             parent=self.app)
+        
+    def buscar(self):
+        for i in range(self.catalogo):
+            for j in range(self.catalogo):
+                if self.catalogo.nombre == self.catalogo[i]:
+                    return f"d"
+
 
     def sugerir(self):
         try:
