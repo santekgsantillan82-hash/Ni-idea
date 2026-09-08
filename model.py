@@ -49,7 +49,7 @@ def agregaraCarrito(productos, codigo, carrito):
     producto = buscar(productos, codigo)
 
     if cantidadCarrito(carrito, codigo) >= producto.stock:
-        raise ValueError("La cantida deseada super el stock disponible")
+        raise ValueError("La cantida deseada supera el stock disponible")
 
     carrito.append(producto)
 
