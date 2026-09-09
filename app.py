@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 from functools import partial
 from model import(
-    catalogo, agregaraCarrito, confirmar, totalCarrito, sugerirPares
+    catalogo, agregaraCarrito, confirmar, totalCarrito, sugerirPares, buscar
 )
 
 class Aplication:
@@ -25,14 +25,14 @@ class Aplication:
         title.grid(row= 0, column= 0, padx= 12, pady= 16)
 
         self.tabs= ctk.CTkTabview(self.app)
-        self.tabs.grid(row= 1, column= 0, padx= 16, pady= 16, sticky="snew")
+        self.tabs.grid(row= 1, column= 0, padx= 16, pady= 16, sticky="nsew")
         self.tabs.add("Libreria")
         self.tabs.add("Presupuesto")
         self.tabs.add("Administracion")
 
         self.crearLibreria()
         self.crearPresupuesto()
-        self.reponerExistencias()
+        self.crearExistencias()
         self.resumen = ctk.CTkLabel(self.app, text="")
         self.resumen.grid(row= 2, column= 0, pady= 10)
         self.refrescar()
@@ -55,7 +55,7 @@ class Aplication:
         entbuscar = ctk.CTkEntry(panel,placeholder_text="Buscador")
         entbuscar.grid(row=1, column=0, padx=2, pady=2, sticky="ew")
 
-        botbusc = ctk.CTkButton(panel, text="?",command=self.buscar)
+        botbusc = ctk.CTkButton(panel, text="?",command=self.busqueda)
 
 
         self.detalle = ctk.CTkTextbox(compra, font=("Arial", 18))
@@ -73,8 +73,24 @@ class Aplication:
             boton= ctk.CTkButton(compra, text=texto, command= accion, height=36)
             boton.grid(row= fila, column= 0, padx= 12, pady= 5, sticky="ew")
 
-    def reponerExistencias(self):
-        panel= ctk.CTkTabview("Administracion")
+
+    def crearExistencias(self):
+        panel = self.tabs.tab("Administracion")
+
+        pro1 = ctk.CTkLabel(panel, text="Codigo del producto que desea reponer: ")
+        pro2 = ctk.CTkLabel(panel, text="Cantidad de unidades que deseas reponer: ")
+        pro1.grid(row= 0, column= 0, padx= 12, pady= 8)
+        pro2.grid(row= 0, column= 2, padx= 12, pady= 8)
+
+        self.codigo= ctk.CTkEntry(panel, placeholder_text="Codigo del Producto")
+        self.codigo.grid(row= 1, column= 0, padx= 12, pady= 16)
+
+        self.cantidad= ctk.CTkEntry(panel, placeholder_text="Cantidad del producto")
+        self.cantidad.grid(row= 1, column= 2, padx= 12, pady= 8)
+
+        self.confirmar= ctk.CTkButton(panel, text="Reponer", command= self.reponer)
+        self.confirmar.grid(row= 2, column= 1, padx= 12, pady= 8)
+
 
     def crearPresupuesto(self):
         panel = self.tabs.tab("Presupuesto")
@@ -173,7 +189,7 @@ class Aplication:
             f"Total: ${total}\nComponente sin validez fiscal.",
             parent=self.app)
         
-    def buscar(self):
+    def busqueda(self):
         for i in range(self.catalogo):
             for j in range(self.catalogo):
                 if self.catalogo.nombre == self.catalogo[i]:
@@ -198,6 +214,24 @@ class Aplication:
                           f"|    Sobran ${sobra}")
         resultado = "\n".join(lineas) or "No hay pares disponibles."
         self.escribir(self.opciones, resultado)
+    
+    def reponer(self):
+        try:
+            entrada1 = self.codigo.get().strip()
+            codigo = entrada1
+            entrada2 = self.cantidad.get().strip()
+            cantidad = int(entrada2)
+            if cantidad <= 0:
+                raise ValueError
+            if buscar(self.productos, codigo):
+                raise TabError
+        except ValueError:
+            messagebox.showwarning("Cantidad Invalida", "La cantidad no puede ser menor a 0", parent= self.app)
+
+        except TabError:
+            messagebox.showwarning("codigo Invalido", "El codigo no esta registrado en el catalogo", parent= self.app)
+
+        
 
     def ejecutar(self):
         self.app.mainloop()
