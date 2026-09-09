@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 from functools import partial
 from model import(
-    catalogo, agregaraCarrito, confirmar, totalCarrito, sugerirPares, buscar
+    catalogo, agregaraCarrito, confirmar, totalCarrito, sugerirPares, cantidadCarrito
 )
 
 class Aplication:
@@ -119,37 +119,83 @@ class Aplication:
 
     def refrescar(self):
         for widget in self.catalogo.winfo_children():
-            widget.destroy()
+         widget.destroy()
+
         for fila, producto in enumerate(self.productos):
             estado = "Disponible"
-            colorboton= "green"
-            colorhover= "darkgreen"
+            colorboton = "green"
+            colorhover = "black-green"
+
             if producto.stock == 0:
-                estado ="Agotado"
-                colorboton= "red"
-                colorhover= "darkred"
+                estado = "Agotado"
+                colorboton = "red"
+                colorhover = "darkred"
+
             elif producto.stock <= 2:
                 estado = "Reponer"
-                colorboton= "orange"
-                colorhover= "darkorange"
+                colorboton = "orange"
+                colorhover = "darkorange"
 
-            texto = (f"{producto.nombre} · ${producto.precio}\n"
-                     f"Stock: {producto.stock} | {estado} |")
-            boton5 = ctk.CTkButton(self.catalogo, text=texto,
-                height=64, anchor="w", fg_color= colorboton, hover_color= colorhover,
-                command=partial(self.agregar_uno, producto.codigo))
-            boton5.grid(row=fila, column=0, padx=8, pady=5,
-                       sticky="ew")
+            texto = (
+                f"{producto.nombre} · ${producto.precio}\n"
+                f"Stock: {producto.stock} | {estado} |"
+            )
+
+            boton5 = ctk.CTkButton(
+                self.catalogo,
+                text=texto,
+                height=64,
+                anchor="w",
+                fg_color=colorboton,
+                hover_color=colorhover,
+                command=partial(self.agregar_uno, producto.codigo)
+            )
+
+            boton5.grid(
+                row=fila,
+                column=0,
+                padx=8,
+                pady=5,
+                sticky="ew"
+            )
+
             if producto.stock == 0:
                 boton5.configure(state="disabled")
+
         lineas = ["· CARRITO ·", ""]
-        for producto in self.carrito:
-            lineas.append(f"{producto.nombre}: ${producto.precio}")
-        self.escribir (self.detalle, "\n".join(lineas))
-        self.total.configure(text=f"Total: ${totalCarrito(self.carrito)}")
+
+        for producto in self.productos:
+            cantidad = cantidadCarrito(
+                self.carrito,
+                producto.codigo
+            )
+
+            if cantidad > 0:
+                cant_tot = producto.precio * cantidad
+
+                lineas.append(
+                    f"{producto.nombre} X {cantidad} | ${cant_tot}"
+                )
+
+        self.escribir(
+            self.detalle,
+            "\n".join(lineas)
+        )
+
+        self.total.configure(
+            text=f"Total: ${totalCarrito(self.carrito)}"
+        )
+
         importe = sum(self.ventas)
-        self.resumen.configure(text=f"Ventas de esta seccion: "
-            f"{len(self.ventas)} | Importe vendido: ${importe}")
+
+        self.resumen.configure(
+            text=(
+                f"Ventas de esta seccion: "
+                f"{len(self.ventas)} | "
+                f"Importe vendido: ${importe}"
+            )
+        )
+
 
     def agregar_uno(self, codigo):
         try:
@@ -218,7 +264,7 @@ class Aplication:
         try:
             entrada1 = self.codigo.get().strip() 
             codigo = entrada1 
-            
+
             entrada2 = self.cantidad.get().strip() 
             cantidad = int(entrada2)
             
