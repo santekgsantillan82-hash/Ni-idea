@@ -155,8 +155,7 @@ class Aplication:
         try:
             agregaraCarrito(self.productos, codigo, self.carrito)
         except ValueError as error:
-            messagebox.showwarning("Revisa la compra", str(error),
-                                    parent=self.app)
+            messagebox.showwarning("Revisa la compra", str(error), parent=self.app)
         self.refrescar()
 
     def quitar(self):
@@ -217,20 +216,33 @@ class Aplication:
     
     def reponer(self):
         try:
-            entrada1 = self.codigo.get().strip()
-            codigo = entrada1
-            entrada2 = self.cantidad.get().strip()
+            entrada1 = self.codigo.get().strip() 
+            codigo = entrada1 
+            
+            entrada2 = self.cantidad.get().strip() 
             cantidad = int(entrada2)
-            if cantidad <= 0:
+            
+            exist= False
+
+            for producto in self.productos:
+                if producto.codigo == codigo:
+                    exist= True
+                    producto.stock += cantidad
+                    break
+
+            if exist == False:
+                messagebox.showwarning("Error del codigo de producto", "Codigo de producto no registrado en el sistema, por favor reintentalo", parent=self.app) 
+
+            elif cantidad <=0:
                 raise ValueError
-            if buscar(self.productos, codigo):
-                raise TabError
+            
+            else:
+                self.refrescar()
+                self.escribir(self.opciones, "")
+                messagebox.showinfo("Stock Actualizado", "Stock Actualizado con Exito", parent= self.app)
+
         except ValueError:
-            messagebox.showwarning("Cantidad Invalida", "La cantidad no puede ser menor a 0", parent= self.app)
-
-        except TabError:
-            messagebox.showwarning("codigo Invalido", "El codigo no esta registrado en el catalogo", parent= self.app)
-
+            messagebox.showwarning("Error de Cantidad", "Error en la cantidad introducida, por favor reintento", parent= self.app)
         
 
     def ejecutar(self):
