@@ -1,0 +1,43 @@
+{
+    "productos": [
+        {
+            "codigo": "A01",
+            "nombre": "X-Men #1",
+            "precio": 1300,
+            "stock": 2
+        },
+        {
+            "codigo": "A02",
+            "nombre": "Avengers vs X-Men #2",
+            "precio": 900,
+            "stock": 10
+        },
+        {
+            "codigo": "A03",
+            "nombre": "Iron Man #1",
+            "precio": 1100,
+            "stock": 8
+        },
+        {
+            "codigo": "A04",
+            "nombre": "Ultimate Batman #1",
+            "precio": 500,
+            "stock": 20
+        },
+        {
+            "codigo": "A05",
+            "nombre": "Superman #17",
+            "precio": 400,
+            "stock": 30
+        },
+        {
+            "codigo": "A06",
+            "nombre": "DC vs Marvel",
+            "precio": 1000,
+            "stock": 15
+        }
+    ],
+    "ventas": [
+        3900
+    ]
+}
