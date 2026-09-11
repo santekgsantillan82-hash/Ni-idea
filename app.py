@@ -12,6 +12,7 @@ class Aplication:
         self.productos = catalogo()
         self.carrito = []
         self.ventas = []
+        self.busquedaactual=""
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("green")
         self.app = ctk.CTk()
@@ -54,10 +55,11 @@ class Aplication:
         compra.grid_columnconfigure(0, weight= 1)
         compra.grid_rowconfigure(0, weight= 1)
 
-        entbuscar = ctk.CTkEntry(panel,placeholder_text="Buscador")
-        entbuscar.grid(row=1, column=0, padx=2, pady=2, sticky="ew")
+        self.entbuscar = ctk.CTkEntry(panel,placeholder_text="Buscador")
+        self.entbuscar.grid(row=1, column=0, padx=2, pady=2, sticky="ew")
 
-        botbusc = ctk.CTkButton(panel, text="?",command=self.busqueda)
+        self.botbusc = ctk.CTkButton(panel, text="?",command= self.busqueda)
+        self.botbusc.grid(row=2, column=0, padx=360, pady=2, sticky="nsew")
 
 
         self.detalle = ctk.CTkTextbox(compra, font=("Arial", 18))
@@ -110,7 +112,7 @@ class Aplication:
 
         self.opciones = ctk.CTkTextbox(panel, font=("Arial", 16))
         self.opciones.grid(row= 3, column= 0, padx= 12, pady= 8, sticky="nsew")
-        self.escribir(self.opciones, "Ingresa un presupuesto")
+        self.escribir(self.opciones, "Se mostrara del menor sobrante al mayor:")
 
     def escribir(self, caja, texto):
         caja.configure(state="normal")
@@ -123,7 +125,14 @@ class Aplication:
         for widget in self.catalogo.winfo_children():
          widget.destroy()
 
+        coincidenciasbusq = 0
+
         for fila, producto in enumerate(self.productos):
+            if self.busquedaactual != "" and self.busquedaactual not in producto.nombre.lower():
+                continue
+
+            coincidenciasbusq = coincidenciasbusq + 1
+
             estado = "Disponible"
             colorboton = "green"
             colorhover = "black-green"
@@ -148,6 +157,9 @@ class Aplication:
 
             if producto.stock == 0:
                 boton5.configure(state="disabled")
+
+        if coincidenciasbusq == 0:
+            messagebox.showwarning("Error","Ningun comic coincide con lo que buscaste, fijate de haberlo escrito bien")
 
         lineas = ["· CARRITO ·", ""]
 
@@ -206,10 +218,10 @@ class Aplication:
             parent=self.app)
         
     def busqueda(self):
-        for i in range(self.catalogo):
-            for j in range(self.catalogo):
-                if self.catalogo.nombre == self.catalogo[i]:
-                    return f"d"
+        textbusqueda = self.entbuscar.get()
+        self.busquedaactual = textbusqueda.lower()
+        self.refrescar()
+
 
 
     def sugerir(self):
@@ -219,6 +231,7 @@ class Aplication:
             if presupuesto > 1000000:
                 raise ValueError("Usa hasta 1000000 pesos.")
             opciones = sugerirPares(self.productos, presupuesto)
+            opciones.sort(key=lambda par: par[3])
         except ValueError:
             messagebox.showwarning("Presupuesto invalido",
                 "Ingresa entre 1 y 1000000, sin puntos ni decimales.", 
