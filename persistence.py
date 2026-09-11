@@ -2,7 +2,7 @@ import json as js
 from pathlib import Path
 from model import Producto, catalogo
 
-productos= catalogo()
+
 def guardar(productos, ventas):
 
     datos={
@@ -21,12 +21,27 @@ def guardar(productos, ventas):
         js.dump(datos, archive, indent= 4, ensure_ascii=False)
 
 def cargar():
-    with open("data.json", "r", encoding="utf-8") as archive:
-        datos = js.load(archive)
+    try:
+        with open("data.json", "r", encoding="utf-8") as archive:
+            datos = js.load(archive)
 
         productos=[]
 
+        for producto in datos["productos"]:
+            productos.append(
+                    Producto(
+                        producto["codigo"],
+                        producto["nombre"],
+                        producto["precio"],
+                        producto["stock"],
+            )
+        )
 
+        ventas = datos["ventas"]
+        return productos, ventas
+    
+    except ValueError:
+        return catalogo(), []
 
 
 

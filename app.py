@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 from functools import partial
-from persistence import guardar
+from persistence import guardar ,cargar
 from model import(
     catalogo, agregaraCarrito, confirmar, totalCarrito, sugerirPares, cantidadCarrito
 )
@@ -9,9 +9,8 @@ from model import(
 
 class Aplication:
     def __init__(self):
-        self.productos = catalogo()
+        self.productos, self.ventas = cargar()
         self.carrito = []
-        self.ventas = []
         self.busquedaactual=""
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("green")
@@ -158,6 +157,7 @@ class Aplication:
             if producto.stock == 0:
                 boton5.configure(state="disabled")
 
+
         if coincidenciasbusq == 0:
             messagebox.showwarning("Error","Ningun comic coincide con lo que buscaste, fijate de haberlo escrito bien")
 
@@ -170,6 +170,7 @@ class Aplication:
                 cant_tot = producto.precio * cantidad
                 lineas.append(f"{producto.nombre} X {cantidad} | ${cant_tot}")
 
+        guardar(self.productos, self.ventas)
         self.escribir(self.detalle, "\n".join(lineas))
         self.total.configure(text=f"Total: ${totalCarrito(self.carrito)}")
 
