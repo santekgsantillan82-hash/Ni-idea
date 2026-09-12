@@ -12,13 +12,13 @@ class Aplication:
         self.productos, self.ventas = cargar()
         self.carrito = []
         self.busquedaactual=""
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("green")
-        self.app = ctk.CTk()
+        ctk.set_appearance_mode("light")
+        ctk.set_default_color_theme("blue")
+        self.app = ctk.CTk(fg_color="#F2EFF3")
         self.app.title("ComicsLab")
         self.app.geometry("960x640")
         self.app.minsize(512, 360)
-        self.app.grid_columnconfigure(0, weight= 0)
+        self.app.grid_columnconfigure(0, weight= 1)
         self.app.grid_rowconfigure(1, weight=1 )
 
         title= ctk.CTkLabel(
@@ -26,11 +26,12 @@ class Aplication:
         )
         title.grid(row= 0, column= 0, padx= 12, pady= 16)
 
-        self.tabs= ctk.CTkTabview(self.app)
-        self.tabs.grid(row= 1, column= 0, padx= 16, pady= 16, sticky="nsew")
+        self.tabs= ctk.CTkTabview(self.app, fg_color= "#B1B1B1")
+        self.tabs.grid(row= 1, column= 0,padx= 16, pady= 16, sticky="nsew")
         self.tabs.add("Libreria")
         self.tabs.add("Presupuesto")
         self.tabs.add("Administracion")
+        self.tabs.set("Presupuesto")
 
         self.crearLibreria()
         self.crearPresupuesto()
@@ -57,12 +58,12 @@ class Aplication:
         self.entbuscar = ctk.CTkEntry(panel,placeholder_text="Buscador")
         self.entbuscar.grid(row=1, column=0, padx=2, pady=2, sticky="ew")
 
-        self.botbusc = ctk.CTkButton(panel, text="?",command= self.busqueda)
-        self.botbusc.grid(row=2, column=0, padx=360, pady=2, sticky="nsew")
+        self.botbusc = ctk.CTkButton(panel, text="Buscar",command= self.busqueda)
+        self.botbusc.grid(row=2, column=0, padx= 128, pady= 2, sticky="nsew")
 
 
         self.detalle = ctk.CTkTextbox(compra, font=("Arial", 18))
-        self.detalle.grid(row= 0, column= 0, padx= 12, pady= 12, sticky="nsew")
+        self.detalle.grid(row= 0, column= 0, padx= 8, pady= 12, sticky="nsew")
 
         self.total = ctk.CTkLabel(compra, text="", font=("Arial", 24, "bold"))
         self.total.grid(row= 1, column= 0, pady= 8)
@@ -117,6 +118,7 @@ class Aplication:
         caja.configure(state="normal")
         caja.delete("1.0","end")
         caja.insert("1.0", texto)
+        caja.configure(font=("Arial", 24))
         caja.configure(state="disable")
 
 
@@ -133,26 +135,24 @@ class Aplication:
             coincidenciasbusq = coincidenciasbusq + 1
 
             estado = "Disponible"
-            colorboton = "green"
-            colorhover = "black-green"
+            colorboton = "#60835B"
+            colorhover = "#7A8D71"
 
             if producto.stock == 0:
                 estado = "Agotado"
-                colorboton = "red"
-                colorhover = "darkred"
+                colorboton = "#414141"
+                colorhover = "#B6B4B4"
             elif producto.stock <= 2:
                 estado = "Reponer"
-                colorboton = "orange"
-                colorhover = "darkorange"
+                colorboton = "#BBAE91"
+                colorhover = "#C4B79D"
 
             texto = (f"{producto.nombre} · ${producto.precio}\n"f"Stock: {producto.stock} | {estado} |")
 
             boton5 = ctk.CTkButton(
-                self.catalogo, text=texto, height=64, anchor="w", fg_color=colorboton, hover_color=colorhover, command=partial(self.agregar_uno, producto.codigo)
-            )
+                self.catalogo, text=texto, height=64, anchor="w", fg_color=colorboton, hover_color=colorhover, command=partial(self.agregar_uno, producto.codigo))
 
-            boton5.grid(row=fila, column=0, padx=8, pady=5, sticky="ew"
-            )
+            boton5.grid(row=fila, column=0, padx=8, pady=5, sticky="ew")
 
             if producto.stock == 0:
                 boton5.configure(state="disabled")

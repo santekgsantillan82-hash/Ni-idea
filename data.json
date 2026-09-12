@@ -4,7 +4,7 @@
             "codigo": "A01",
             "nombre": "X-Men #1",
             "precio": 1300,
-            "stock": 7
+            "stock": 0
         },
         {
             "codigo": "A02",
@@ -16,7 +16,7 @@
             "codigo": "A03",
             "nombre": "Iron Man #1",
             "precio": 1100,
-            "stock": 8
+            "stock": 2
         },
         {
             "codigo": "A04",
@@ -39,6 +39,8 @@
     ],
     "ventas": [
         2600,
-        3900
+        3900,
+        9100,
+        6600
     ]
 }
